@@ -182,3 +182,20 @@ html[dir="rtl"] .navbar-nav {
 html[dir="rtl"] .d-flex {
   flex-direction: row-reverse;
 }
+
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+html[dir="rtl"] .card-body {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-label {
+  text-align: right;
+}
+
+html[dir="rtl"] .btn {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}

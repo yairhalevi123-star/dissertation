@@ -4,6 +4,7 @@ import axios from "axios";
 function DocumentUpload({ userId }) {
   const [file, setFile] = useState(null);
 
+  // פונקציה להעלאת הקובץ לשרת
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("document", file);
@@ -19,9 +20,23 @@ function DocumentUpload({ userId }) {
   };
 
   return (
-    <div>
-      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-      <button onClick={handleUpload}>העלי מסמך</button>
+    <div className="mb-3">
+      <label htmlFor="file-upload" className="form-label">
+        בחר קובץ להעלאה
+      </label>
+      <input
+        type="file"
+        id="file-upload"
+        className="form-control"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+      <button
+        className="btn btn-primary mt-2"
+        onClick={handleUpload}
+        disabled={!file}
+      >
+        העלי מסמך
+      </button>
     </div>
   );
 }

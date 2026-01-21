@@ -1,41 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import DocumentUpload from "./DocumentUpload";
-
-const babySizes = {
-  4: {
-    fruit: "גרגיר פרג",
-    icon: "🌱",
-    description: "העובר קטן מאוד, ממש בהתחלה.",
-  },
-  8: {
-    fruit: "פטל",
-    icon: "🍓",
-    description: "הידיים והרגליים הקטנות מתחילות להיווצר.",
-  },
-  12: {
-    fruit: "לימון",
-    icon: "🍋",
-    description: "העובר כבר נראה כמו תינוק קטן וזז המון.",
-  },
-  16: {
-    fruit: "אבוקדו",
-    icon: "🥑",
-    description: "הוא כבר יכול להחזיק ידיים!",
-  },
-  20: {
-    fruit: "בננה",
-    icon: "🍌",
-    description: "חצי דרך! הוא שומע את הקול שלך.",
-  },
-  24: { fruit: "תירס", icon: "🌽", description: "הריאות מתחילות להתפתח." },
-  30: {
-    fruit: "מלון",
-    icon: "🍈",
-    description: "הוא מתחיל לצבור שומן ולהתחמם.",
-  },
-  40: { fruit: "אבטיח", icon: "🍉", description: "מוכנים ליציאה!" },
-};
+import DailyLog from "./DailyLog";
+import BabySize from "./BabySize";
 
 function Dashboard({ user }) {
   const [status, setStatus] = useState(null);
@@ -51,6 +18,7 @@ function Dashboard({ user }) {
         console.error("שגיאה במשיכת הנתונים", error);
       }
     };
+    // קריאה לפונקציה למשיכת הסטטוס
     fetchStatus();
   }, [user.id]);
 
@@ -79,16 +47,7 @@ function Dashboard({ user }) {
     }
   };
 
-  // פונקציית עזר למציאת הפרי הקרוב ביותר לשבוע הנוכחי
-  const getBabySize = (week) => {
-    const weeks = Object.keys(babySizes).map(Number).reverse();
-    const currentWeekInfo = weeks.find((w) => week >= w) || 4;
-    return babySizes[currentWeekInfo];
-  };
-
   if (!status) return <div className="text-center mt-5">טוען נתונים...</div>;
-
-  const babyInfo = getBabySize(status.currentWeek);
 
   return (
     <div className="container mt-5">
@@ -116,16 +75,7 @@ function Dashboard({ user }) {
             </div>
           </div>
 
-          <div className="card mb-4">
-            <div className="card-body text-center">
-              <h3 className="card-title">גודל התינוק שלך</h3>
-              <div style={{ fontSize: "4rem", margin: "20px 0" }}>
-                {babyInfo.icon}
-              </div>
-              <h4>העובר שלך בגודל של {babyInfo.fruit}</h4>
-              <p className="card-text">{babyInfo.description}</p>
-            </div>
-          </div>
+          <BabySize currentWeek={status.currentWeek} />
 
           <div className="card">
             <div className="card-body">
@@ -162,6 +112,7 @@ function Dashboard({ user }) {
               <DocumentUpload userId={user.id} />
             </div>
           </div>
+          <DailyLog userId={user.id} />
         </div>
       </div>
     </div>

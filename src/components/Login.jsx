@@ -2,12 +2,14 @@ import { useState } from "react";
 import axios from "axios";
 
 function Login({ onLogin }) {
+  // State variables for email, password, and message
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    // Try to log in the user by sending a POST request to the server
     try {
       const response = await axios.post("/api/login", { email, password });
       setMessage(response.data.message);
