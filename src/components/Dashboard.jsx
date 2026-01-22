@@ -80,6 +80,7 @@ function Dashboard({ user }) {
           <div className="card">
             <div className="card-body">
               <h3 className="card-title">הבדיקות המומלצות עבורך:</h3>
+              <h1>swqdwwwwww</h1>
               <ul className="list-group">
                 {tests.map((test) => (
                   <li
