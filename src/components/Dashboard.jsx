@@ -3,6 +3,9 @@ import axios from "axios";
 import DocumentUpload from "./DocumentUpload";
 import DailyLog from "./DailyLog";
 import BabySize from "./BabySize";
+import KickCounter from "./KickCounter";
+import WeightTracker from "./WeightTracker";
+import ContractionTimer from "./ContractionTimer";
 
 function Dashboard({ user }) {
   const [status, setStatus] = useState(null);
@@ -137,12 +140,18 @@ function Dashboard({ user }) {
 
           <div className="card mt-4 shadow-sm">
             <div className="card-body">
-              <h5 className="card-title">העלאת מסמכים</h5>
+              <h3 className="card-title">העלאת מסמכים</h3>
               <DocumentUpload userId={user.id} />
             </div>
           </div>
 
           <DailyLog userId={user.id} />
+
+          <KickCounter userId={user.id} />
+
+          <WeightTracker userId={user.id} />
+
+          <ContractionTimer userId={user.id} />
         </div>
       </div>
     </div>
