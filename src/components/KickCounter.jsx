@@ -57,8 +57,8 @@ function KickCounter({ userId }) {
       <div className="display-1 my-3">{kicks}</div>
 
       <button
-        className="btn btn-primary btn-lg rounded-circle mb-3"
-        style={{ width: "120px", height: "120px" }}
+        className="btn btn-primary mb-3"
+        style={{ width: "100px", height: "50px" }}
         onClick={handleKick}
       >
         בעיטה!
