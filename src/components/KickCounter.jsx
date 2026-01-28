@@ -8,19 +8,36 @@ function KickCounter({ userId }) {
   const [sessionId, setSessionId] = useState(null);
 
   const handleKick = async () => {
+    let currentSessionId = sessionId;
+
     if (!isTracking) {
       setIsTracking(true);
       setStartTime(Date.now());
-      const newSessionId = Date.now();
-      setSessionId(newSessionId);
+
+      // Create a new session first
+      try {
+        const sessionResponse = await axios.post(
+          `http://localhost:3000/api/kick-sessions/${userId}`,
+          {
+            session_date: new Date().toISOString().split("T")[0],
+          },
+        );
+        currentSessionId = sessionResponse.data.session_id;
+        setSessionId(currentSessionId);
+      } catch (err) {
+        console.error("Error creating kick session", err);
+        return;
+      }
     }
-    setKicks((prev) => prev + 1);
+
+    const newKickCount = kicks + 1;
+    setKicks(newKickCount);
 
     // Save kick to database
     try {
       await axios.post(`http://localhost:3000/api/kicks/${userId}`, {
-        session_id: sessionId || Date.now(),
-        kick_count: kicks + 1,
+        session_id: currentSessionId,
+        kick_count: newKickCount,
       });
     } catch (err) {
       console.error("Error saving kick", err);
