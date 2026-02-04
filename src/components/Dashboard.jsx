@@ -6,6 +6,7 @@ import BabySize from "./BabySize";
 import KickCounter from "./KickCounter";
 import WeightTracker from "./WeightTracker";
 import ContractionTimer from "./ContractionTimer";
+import AIChat from "./AIChat"; // ייבוא הקומפוננטה החדשה
 
 function Dashboard({ user }) {
   const [status, setStatus] = useState(null);
@@ -45,10 +46,8 @@ function Dashboard({ user }) {
     }
   };
 
-  // --- הגנה וחישובים ---
   if (!status) return <div className="text-center mt-5">טוען נתונים...</div>;
 
-  // החישובים מתבצעים רק אחרי שווידאנו ש-status קיים
   const currentDays = status.currentWeek * 7 + (status.daysIntoWeek || 0);
   const daysRemaining = Math.max(0, 280 - currentDays);
   const preciseProgress = Math.min(100, (currentDays / 280) * 100);
@@ -84,8 +83,8 @@ function Dashboard({ user }) {
             </div>
           </div>
 
-          {/* כרטיס ספירה לאחור - מבוסס ימים */}
-          <div className="card mb-4 text-white  shadow-sm">
+          {/* כרטיס ספירה לאחור */}
+          <div className="card mb-4 text-white shadow-sm">
             <div className="card-body text-center">
               <h3 className="mb-3">
                 עוד {daysRemaining} ימים לתאריך הלידה המשוער! 👶
@@ -104,6 +103,9 @@ function Dashboard({ user }) {
           </div>
 
           <BabySize currentWeek={status.currentWeek} />
+
+          {/* --- הצ'אט החכם --- */}
+          <AIChat userStatus={status} userId={user.id} />
 
           {/* רשימת בדיקות */}
           <div className="card shadow-sm mt-4">
@@ -146,11 +148,8 @@ function Dashboard({ user }) {
           </div>
 
           <DailyLog userId={user.id} />
-
           <KickCounter userId={user.id} />
-
           <WeightTracker userId={user.id} />
-
           <ContractionTimer userId={user.id} />
         </div>
       </div>

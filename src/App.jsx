@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 // React Router imports
 import {
   BrowserRouter as Router,
@@ -12,33 +12,30 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
+import GuestFAQ from "./components/GuestFAQ"; // ייבוא הקומפוננטה החדשה לאורחים
 import "./App.css";
 
 function AppContent() {
-  // State to manage logged-in user
+  // ניהול מצב המשתמש המחובר
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null,
   );
-  // React Router navigation hook
+
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   document.documentElement.dir = "rtl";
-  // }, []);
-
-  // Handle user login
+  // פונקציית התחברות
   const handleLogin = (userData) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // שמירה בדפדפן
+    localStorage.setItem("user", JSON.stringify(userData));
     navigate("/dashboard");
   };
 
-  // Handle user registration
+  // פונקציית הרשמה
   const handleRegister = () => {
     navigate("/login");
   };
 
-  // Handle user logout
+  // פונקציית יציאה
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("user");
@@ -46,40 +43,63 @@ function AppContent() {
   };
 
   return (
-    <div className="App">
-      <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top">
+    <div className="App" dir="rtl">
+      {" "}
+      {/* הוספת RTL לתמיכה בעברית */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top shadow-sm">
         <div className="container-fluid">
-          <span className="navbar-brand">Pregnancy Assistant</span>
+          <span className="navbar-brand fw-bold">מרכז עדנה - עוזרת הריון</span>
           <div className="d-flex align-items-center">
-            {/* Conditional rendering based on user login status */}
             {user ? (
-              <button className="btn btn-outline-danger" onClick={handleLogout}>
-                Logout
-              </button>
+              <div className="d-flex align-items-center gap-3">
+                <span className="text-muted">שלום, {user.name}</span>
+                <button
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={handleLogout}
+                >
+                  התנתקות
+                </button>
+              </div>
             ) : (
-              <div className="navbar-nav">
+              <div className="navbar-nav flex-row gap-3">
                 <Link className="nav-link" to="/login">
-                  Login
+                  התחברות
                 </Link>
                 <Link className="nav-link" to="/register">
-                  Register
+                  הרשמה
                 </Link>
               </div>
             )}
           </div>
         </div>
       </nav>
-      <Routes>
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route
-          path="/register"
-          element={<Register onRegister={handleRegister} />}
-        />
-        <Route
-          path="/dashboard"
-          element={user ? <Dashboard user={user} /> : <Navigate to="/login" />}
-        />
-      </Routes>
+      {/* ריווח מה-navbar הקבוע */}
+      <div style={{ paddingTop: "80px", minHeight: "100vh" }}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+            }
+          />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route
+            path="/register"
+            element={<Register onRegister={handleRegister} />}
+          />
+          <Route
+            path="/dashboard"
+            element={
+              user ? <Dashboard user={user} /> : <Navigate to="/login" />
+            }
+          />
+        </Routes>
+      </div>
+      {/* לוגיקה לרינדור ה-FAQ: 
+          יוצג רק כאשר המשתמש *לא* מחובר.
+          ברגע שיש user, הוא יראה את ה-AIChat שנמצא כבר בתוך ה-Dashboard.
+      */}
+      {!user && <GuestFAQ />}
     </div>
   );
 }

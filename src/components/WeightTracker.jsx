@@ -137,7 +137,7 @@ const WeightTracker = ({ userId }) => {
 
   return (
     <div className="card shadow-sm p-4 mt-4 text-center">
-      <h3> מעקב משקל שבועי ⚖️</h3>
+      <h3 style={{ fontFamily: "-apple-system" }}> מעקב משקל שבועי ⚖️</h3>
 
       <div className="mb-4">
         <div className="input-group">
