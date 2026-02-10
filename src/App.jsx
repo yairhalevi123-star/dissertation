@@ -48,7 +48,7 @@ function AppContent() {
       {/* הוספת RTL לתמיכה בעברית */}
       <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top shadow-sm">
         <div className="container-fluid">
-          <span className="navbar-brand fw-bold">מרכז עדנה - עוזרת הריון</span>
+          <span className="navbar-brand fw-bold">מרכז הריון</span>
           <div className="d-flex align-items-center">
             {user ? (
               <div className="d-flex align-items-center gap-3">

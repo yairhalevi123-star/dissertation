@@ -6,8 +6,9 @@ function AIChat({ userStatus }) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef(null);
+  const textareaRef = useRef(null);
 
-  // 1. טעינת הודעות מה-LocalStorage או שימוש בהודעת פתיחה דיפולטיבית
+  // 1. Load messages from LocalStorage
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("chat_history");
     return savedMessages
@@ -20,16 +21,22 @@ function AIChat({ userStatus }) {
         ];
   });
 
-  // 2. שמירת הודעות ב-LocalStorage בכל פעם שהן משתנות
+  // 2. Auto-scroll and Save History
   useEffect(() => {
     localStorage.setItem("chat_history", JSON.stringify(messages));
-
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isLoading, isOpen]);
 
-  // פונקציה לניקוי היסטוריה (אופציונלי)
+  // 3. Auto-resize textarea height
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [input]);
+
   const clearChat = () => {
     const initialMsg = [
       {
@@ -42,11 +49,12 @@ function AIChat({ userStatus }) {
   };
 
   const sendMessage = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!input.trim() || isLoading) return;
 
     const userMsg = { role: "user", content: input };
     const updatedMessages = [...messages, userMsg];
+
     setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
@@ -84,6 +92,18 @@ function AIChat({ userStatus }) {
             to { opacity: 1; transform: translateY(0); }
           }
           .animate-chat { animation: fadeInUpCustom 0.4s ease-out; }
+          
+          /* Remove Bootstrap focus borders and the gray line */
+          .custom-input-group:focus-within {
+            border-color: #0d6efd !important;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+          }
+          .chat-textarea:focus {
+            outline: none !important;
+            box-shadow: none !important;
+          }
+          .chat-textarea::-webkit-scrollbar { width: 4px; }
+          .chat-textarea::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
         `}
       </style>
 
@@ -110,11 +130,9 @@ function AIChat({ userStatus }) {
           <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
             <h6 className="mb-0">ליווי הריון חכם ✨</h6>
             <div>
-              {/* כפתור פח לניקוי שיחה */}
               <button
                 className="btn btn-sm btn-outline-light me-2"
                 onClick={clearChat}
-                title="נקה צ'אט"
               >
                 🗑️
               </button>
@@ -160,22 +178,51 @@ function AIChat({ userStatus }) {
             {isLoading && <div className="text-muted small">מעבד...</div>}
           </div>
 
-          <div className="card-footer bg-white border-top-0">
-            <form onSubmit={sendMessage} className="input-group">
-              <input
-                type="text"
-                className="form-control"
+          <div className="card-footer bg-white border-top-0 pt-0">
+            <form
+              onSubmit={sendMessage}
+              className="input-group align-items-end custom-input-group"
+              style={{
+                border: "1px solid #dee2e6",
+                borderRadius: "20px",
+                overflow: "hidden",
+                backgroundColor: "white",
+              }}
+            >
+              <textarea
+                ref={textareaRef}
+                className="form-control chat-textarea border-0"
                 placeholder="שאלי אותי משהו..."
+                rows="1"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
                 disabled={isLoading}
-                style={{ borderRadius: "20px 0 0 20px" }}
+                style={{
+                  resize: "none",
+                  maxHeight: "120px",
+                  overflowY: "auto",
+                  padding: "12px 15px",
+                  lineHeight: "1.4",
+                  backgroundColor: "transparent",
+                }}
               />
               <button
-                className="btn btn-primary"
+                className="btn text-primary d-flex align-items-center justify-content-center border-0"
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                style={{ borderRadius: "0 20px 20px 0" }}
+                style={{
+                  height: "48px",
+                  padding: "0 15px",
+                  backgroundColor: "transparent",
+                  fontWeight: "bold",
+                  boxShadow: "none",
+                }}
               >
                 שלחי
               </button>
