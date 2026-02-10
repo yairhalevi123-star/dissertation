@@ -1,5 +1,4 @@
-import { useState } from "react";
-// React Router imports
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,46 +11,102 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
-import GuestFAQ from "./components/GuestFAQ"; // ייבוא הקומפוננטה החדשה לאורחים
+import GuestFAQ from "./components/GuestFAQ";
 import "./App.css";
 
 function AppContent() {
-  // ניהול מצב המשתמש המחובר
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null,
   );
-
   const navigate = useNavigate();
 
-  // פונקציית התחברות
   const handleLogin = (userData) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
     navigate("/dashboard");
   };
 
-  // פונקציית הרשמה
-  const handleRegister = () => {
-    navigate("/login");
-  };
-
-  // פונקציית יציאה
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("chat_history");
     navigate("/login");
   };
 
   return (
     <div className="App" dir="rtl">
-      {" "}
-      {/* הוספת RTL לתמיכה בעברית */}
+      {/* CSS Fixes for Smooth Scrolling and Navbar Offset */}
+      <style>
+        {`
+          html { scroll-behavior: smooth; }
+          /* This stops the scroll 100px before the element so the navbar doesn't cover the title */
+          [id] { scroll-margin-top: 100px; } 
+        `}
+      </style>
+
       <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top shadow-sm">
         <div className="container-fluid">
           <span className="navbar-brand fw-bold">מרכז הריון</span>
-          <div className="d-flex align-items-center">
+
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className="collapse navbar-collapse" id="navbarNav">
+            {user && (
+              <ul className="navbar-nav mx-auto gap-2">
+                <li className="nav-item">
+                  <a className="nav-link" href="#baby-size">
+                    גודל התינוק
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#recommended-tests">
+                    הבדיקות המומלצות
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#appointments">
+                    הפגישות
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#documents">
+                    מסמכים
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#daily-log">
+                    לוג יומי
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#kick-counter">
+                    מונה בעיטות
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#weight-tracker">
+                    מעקב משקל
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#contractions">
+                    תזמון צירים
+                  </a>
+                </li>
+              </ul>
+            )}
+          </div>
+
+          <div className="d-flex align-items-center gap-3">
             {user ? (
-              <div className="d-flex align-items-center gap-3">
+              <div className="d-flex align-items-center gap-2">
                 <span className="text-muted">שלום, {user.name}</span>
                 <button
                   className="btn btn-outline-danger btn-sm"
@@ -73,8 +128,9 @@ function AppContent() {
           </div>
         </div>
       </nav>
-      {/* ריווח מה-navbar הקבוע */}
-      <div style={{ paddingTop: "80px", minHeight: "100vh" }}>
+
+      {/* Main Content Area */}
+      <div style={{ paddingTop: "90px", minHeight: "100vh" }}>
         <Routes>
           <Route
             path="/"
@@ -85,7 +141,7 @@ function AppContent() {
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route
             path="/register"
-            element={<Register onRegister={handleRegister} />}
+            element={<Register onRegister={() => navigate("/login")} />}
           />
           <Route
             path="/dashboard"
@@ -95,10 +151,7 @@ function AppContent() {
           />
         </Routes>
       </div>
-      {/* לוגיקה לרינדור ה-FAQ: 
-          יוצג רק כאשר המשתמש *לא* מחובר.
-          ברגע שיש user, הוא יראה את ה-AIChat שנמצא כבר בתוך ה-Dashboard.
-      */}
+
       {!user && <GuestFAQ />}
     </div>
   );

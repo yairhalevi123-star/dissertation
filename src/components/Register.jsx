@@ -17,6 +17,8 @@ function Register({ onRegister }) {
         password,
         last_period_date: lastPeriodDate,
       });
+      // Clear AI chat history for new register
+      localStorage.removeItem("chat_history");
       setMessage("Registration successful! Please login.");
       onRegister();
     } catch (error) {
