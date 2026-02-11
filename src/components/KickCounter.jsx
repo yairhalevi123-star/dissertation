@@ -74,8 +74,15 @@ function KickCounter({ userId }) {
       <div className="display-1 my-3">{kicks}</div>
 
       <button
-        className="btn btn-primary mb-3"
-        style={{ width: "100px", height: "50px" }}
+        className="btn btn-primary mb-3 d-flex align-items-center justify-content-center"
+        style={{
+          width: "80px", // Must be equal to height
+          height: "80px", // Must be equal to width
+          borderRadius: "50%", // Makes it a circle
+          padding: "0", // Removes default padding that might squish text
+          fontSize: "1rem", // Ensures text size fits the circle
+          whiteSpace: "nowrap", // Prevents the word from breaking into two lines
+        }}
         onClick={handleKick}
       >
         בעיטה!

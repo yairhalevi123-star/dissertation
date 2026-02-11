@@ -1,8 +1,12 @@
 /* Appointments Component Styling */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap");
 
 .appointments-container {
-  background-color: #f9f9f9;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 192, 203, 0.3);
+  box-shadow: 0 8px 24px rgba(255, 105, 180, 0.1);
 }
 
 .appointments-container .card-body {
@@ -12,15 +16,16 @@
 /* Calendar Styling */
 .appointments-calendar {
   width: 100%;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 192, 203, 0.4);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 24px rgba(255, 105, 180, 0.1);
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
 }
 
 .appointments-calendar.react-calendar {
   max-width: 100%;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .react-calendar__tile {
@@ -31,21 +36,30 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  margin: 2px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
 }
 
 .react-calendar__tile--active {
-  background-color: #007bff;
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
   color: white;
-  border-radius: 4px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+  transform: scale(1.05);
 }
 
 .react-calendar__tile:hover {
-  background-color: #f0f0f0;
-  border-radius: 4px;
+  background-color: rgba(255, 192, 203, 0.2);
+  border-radius: 10px;
+  transform: translateY(-2px);
 }
 
 .react-calendar__tile--active:hover {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, #ff1493, #cc0066);
+  box-shadow: 0 6px 16px rgba(255, 105, 180, 0.4);
 }
 
 .tile-content {
@@ -64,40 +78,26 @@
 
 .appointment-indicator .badge {
   font-size: 0.65rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  animation: pulse 2s ease-in-out infinite;
 }
 
 .badge-doctor {
-  background-color: #007bff;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
 }
 
 .badge-ultrasound {
-  background-color: #6f42c1;
+  background: linear-gradient(135deg, #6f42c1, #553399);
+  color: white;
 }
 
 .badge-lab_test {
-  background-color: #fd7e14;
-}
-
-.badge-checkup {
-  background-color: #28a745;
-}
-
-.badge-other {
-  background-color: #6c757d;
-}
-
-/* Appointment Details */
-.appointment-details {
-  border-left: 4px solid #007bff;
-}
-
-.appointment-details .card-body {
-  padding: 1.5rem;
-}
-
-.appointment-details h5 {
-  color: #333;
+  background: linear-gradient(135deg, #fd7e14, #ff6600);
+  color: white;
   margin-bottom: 0.5rem;
 }
 
@@ -108,10 +108,11 @@
 .details-group p {
   margin: 0.5rem 0;
   font-size: 0.95rem;
+  font-family: "Poppins", sans-serif;
 }
 
 .details-group strong {
-  color: #555;
+  color: #ff1493;
   font-weight: 600;
 }
 
@@ -123,38 +124,54 @@
 .button-group button {
   flex: 1;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
 /* No Appointment State */
 .no-appointment {
   padding: 2rem 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 192, 203, 0.1),
+    rgba(255, 105, 180, 0.05)
+  );
+  border-radius: 15px;
+  text-align: center;
+  border: 2px dashed rgba(255, 192, 203, 0.4);
 }
 
 /* Form Styling */
 .appointment-form {
-  background-color: #f8f9fa;
-  border-left: 4px solid #28a745;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 240, 245, 0.8)
+  );
+  border-left: 5px solid rgba(255, 105, 180, 0.6);
+  border-radius: 15px;
+  animation: slideInUp 0.5s ease;
 }
 
 .appointment-form .form-control,
 .appointment-form .form-select {
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 0.5rem 0.75rem;
+  border: 2px solid rgba(255, 192, 203, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.3s ease;
 }
 
 .appointment-form .form-control:focus,
 .appointment-form .form-select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: #ff69b4;
+  box-shadow: 0 0 12px rgba(255, 105, 180, 0.3);
 }
 
 .appointment-form .form-label {
   font-weight: 600;
-  color: #333;
-  margin-bottom: 0.5rem;
+  color: #555;
+  margin-bottom: 8px;
+  font-family: "Poppins", sans-serif;
 }
 
 /* Appointments List */
@@ -164,18 +181,21 @@
 }
 
 .appointment-item {
-  border-left: 4px solid #007bff;
-  transition: all 0.2s ease;
+  border-left: 5px solid rgba(255, 105, 180, 0.6);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .appointment-item:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
   transform: translateX(4px);
 }
 
 .appointment-item h6 {
-  color: #333;
-  font-weight: 600;
+  color: #ff1493;
+  font-weight: 700;
+  font-family: "Playfair Display", serif;
   margin-bottom: 0.25rem;
 }
 
@@ -187,6 +207,7 @@
   font-size: 0.8rem;
   padding: 0.35rem 0.6rem;
   white-space: nowrap;
+  border-radius: 8px;
 }
 
 /* Responsive Design */
@@ -220,6 +241,20 @@
 /* Scrollbar styling for appointments list */
 .appointments-list::-webkit-scrollbar {
   width: 6px;
+}
+
+.appointments-list::-webkit-scrollbar-track {
+  background: rgba(255, 192, 203, 0.1);
+  border-radius: 10px;
+}
+
+.appointments-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  border-radius: 10px;
+}
+
+.appointments-list::-webkit-scrollbar-thumb:hover {
+  background: #ff1493;
 }
 
 .appointments-list::-webkit-scrollbar-track {

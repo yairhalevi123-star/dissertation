@@ -46,7 +46,10 @@ function AppContent() {
 
       <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top shadow-sm">
         <div className="container-fluid">
-          <span className="navbar-brand fw-bold">מרכז הריון</span>
+          <div className="pregnancy-logo">
+            <span className="logo">🤰</span>
+            <span className="navbar-brand fw-bold">מרכז הריון</span>
+          </div>
 
           <button
             className="navbar-toggler"
@@ -59,7 +62,7 @@ function AppContent() {
 
           <div className="collapse navbar-collapse" id="navbarNav">
             {user && (
-              <ul className="navbar-nav mx-auto gap-2">
+              <ul className="navbar-nav mx-auto gap-4">
                 <li className="nav-item">
                   <a className="nav-link" href="#baby-size">
                     גודל התינוק
