@@ -15,7 +15,7 @@ function Login({ onLogin }) {
       setMessage(response.data.message);
       onLogin(response.data.user);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Error logging in");
+      setMessage(error.response?.data?.message || "שגיאה בהתחברות");
     }
   };
 
@@ -25,11 +25,11 @@ function Login({ onLogin }) {
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">
-              <h1 className="card-title text-center">Login</h1>
+              <h1 className="card-title text-center">התחברות</h1>
               <form onSubmit={handleLogin}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
-                    Email:
+                    דוא"ל:
                   </label>
                   <input
                     type="email"
@@ -42,7 +42,7 @@ function Login({ onLogin }) {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="password" className="form-label">
-                    Password:
+                    סיסמה:
                   </label>
                   <input
                     type="password"
@@ -54,7 +54,7 @@ function Login({ onLogin }) {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary w-100">
-                  Login
+                  התחבר
                 </button>
               </form>
               {message && (

@@ -1,12 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
-function AIChat({ userStatus }) {
+function AIChat({ userStatus, userId }) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
+
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocs, setSelectedDocs] = useState({});
+  const [includePageData, setIncludePageData] = useState(false);
 
   // 1. Load messages from LocalStorage
   const [messages, setMessages] = useState(() => {
@@ -28,6 +32,21 @@ function AIChat({ userStatus }) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isLoading, isOpen]);
+
+  // 3. Fetch user documents when userId available
+  useEffect(() => {
+    const fetchDocs = async () => {
+      if (!userId) return;
+      try {
+        const res = await axios.get(`/api/documents/${userId}`);
+        setDocuments(res.data || []);
+      } catch (err) {
+        console.error("Error fetching documents:", err);
+      }
+    };
+
+    fetchDocs();
+  }, [userId]);
 
   // 3. Auto-resize textarea height
   useEffect(() => {
@@ -60,10 +79,18 @@ function AIChat({ userStatus }) {
     setIsLoading(true);
 
     try {
+      // Prepare documents summary to send to the AI endpoint
+      const docsToSend = documents
+        .filter((d) => selectedDocs[d.id])
+        .map((d) => ({ id: d.id, name: d.file_name }));
+
       const response = await axios.post("/api/ai/chat", {
         messages: updatedMessages,
         currentWeek: userStatus.currentWeek,
         userName: userStatus.name,
+        userId,
+        pageData: includePageData ? userStatus : null,
+        documents: docsToSend,
       });
 
       setMessages((prev) => [
@@ -83,7 +110,7 @@ function AIChat({ userStatus }) {
   return (
     <div
       className="chat-widget-container"
-      style={{ position: "fixed", bottom: "20px", left: "20px", zIndex: 1000 }}
+      style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 2000 }}
     >
       <style>
         {`
@@ -122,9 +149,10 @@ function AIChat({ userStatus }) {
             width: "350px",
             position: "absolute",
             bottom: "75px",
-            left: "0",
+            right: "0",
             borderRadius: "15px",
             border: "none",
+            zIndex: 2001,
           }}
         >
           <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
@@ -140,6 +168,55 @@ function AIChat({ userStatus }) {
                 className="btn-close btn-close-white"
                 onClick={() => setIsOpen(false)}
               ></button>
+            </div>
+          </div>
+
+          {/* Documents & Page Data Controls */}
+          <div
+            className="p-2 bg-white border-bottom"
+            style={{ fontSize: "0.9rem" }}
+          >
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <label className="me-2">כלול נתוני דף:</label>
+                <input
+                  type="checkbox"
+                  checked={includePageData}
+                  onChange={(e) => setIncludePageData(e.target.checked)}
+                />
+              </div>
+              <div>
+                <small className="text-muted">המסמכים שלי:</small>
+              </div>
+            </div>
+            <div style={{ maxHeight: "90px", overflowY: "auto" }}>
+              {documents.length > 0 ? (
+                documents.map((d) => (
+                  <div key={d.id} className="d-flex align-items-center mb-1">
+                    <input
+                      type="checkbox"
+                      className="me-2"
+                      checked={!!selectedDocs[d.id]}
+                      onChange={(e) =>
+                        setSelectedDocs((prev) => ({
+                          ...prev,
+                          [d.id]: e.target.checked,
+                        }))
+                      }
+                    />
+                    <small
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        window.open(`/api/documents/view/${d.id}`, "_blank")
+                      }
+                    >
+                      {d.file_name}
+                    </small>
+                  </div>
+                ))
+              ) : (
+                <small className="text-muted">לא נמצאו מסמכים</small>
+              )}
             </div>
           </div>
 

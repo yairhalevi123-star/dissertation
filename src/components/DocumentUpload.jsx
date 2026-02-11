@@ -3,21 +3,19 @@ import axios from "axios";
 
 function DocumentUpload({ userId }) {
   const [file, setFile] = useState(null);
-  const [documents, setDocuments] = useState([]); // State to hold the list
+  const [documents, setDocuments] = useState([]);
 
-  // 1. Function to fetch the files from the server
   const fetchDocuments = async () => {
     try {
       const response = await axios.get(
         `http://localhost:3000/api/documents/${userId}`,
       );
-      setDocuments(response.data); // Assuming server returns an array of file objects
+      setDocuments(response.data);
     } catch (err) {
-      console.error("Error fetching files", err);
+      console.error("שגיאה במשיכת קבצים", err);
     }
   };
 
-  // 2. Fetch list automatically when component mounts
   useEffect(() => {
     if (userId) fetchDocuments();
   }, [userId]);
@@ -30,51 +28,47 @@ function DocumentUpload({ userId }) {
       await axios.post(`http://localhost:3000/api/upload/${userId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("הקובץ הועלה!");
+      alert("הקובץ הועלה בהצלחה!");
       setFile(null);
-      fetchDocuments(); // 3. Refresh the list after a successful upload
+      fetchDocuments();
     } catch (err) {
       console.error("שגיאה בהעלאה", err);
       alert("שגיאה בהעלאת הקובץ");
     }
   };
 
-  const handleViewFile = (doc) => {
-    // Create a proper file URL for viewing
-    const fileUrl = `http://localhost:3000/api/documents/view/${doc.id}`;
-    window.open(fileUrl, "_blank");
-  };
-
-  const handleDownloadFile = (doc) => {
-    // Create a download link
-    const downloadUrl = `http://localhost:3000/api/documents/download/${doc.id}`;
-    const a = document.createElement("a");
-    a.href = downloadUrl;
-    a.download = doc.file_name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
   return (
-    <div className="mb-3">
-      <input
-        type="file"
-        className="form-control"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
+    <div className="mb-3" dir="rtl">
+      {" "}
+      {/* Forces Right-to-Left direction */}
+      {/* Custom File Input to solve the "No file chosen" English text */}
+      <div className="input-group mb-2">
+        <label
+          className="input-group-text btn btn-outline-secondary"
+          htmlFor="inputGroupFile01"
+        >
+          בחרי קובץ
+        </label>
+        <input
+          type="file"
+          className="form-control"
+          id="inputGroupFile01"
+          style={{ display: "none" }} // Hide the default browser input
+          onChange={(e) => setFile(e.target.files[0])}
+        />
+        <div className="form-control bg-light">
+          {file ? file.name : "לא נבחר קובץ"}
+        </div>
+      </div>
       <button
-        className="btn btn-primary mt-2"
+        className="btn btn-primary w-100 mt-2"
         onClick={handleUpload}
         disabled={!file}
       >
-        העלי מסמך
+        העלי מסמך עכשיו
       </button>
-
       <hr />
-
-      {/* 4. Display the uploaded files */}
-      <h4>המסמכים שלי</h4>
+      <h4 className="mb-3">המסמכים שלי</h4>
       <ul className="list-group">
         {documents.length > 0 ? (
           documents.map((doc) => (
@@ -82,25 +76,36 @@ function DocumentUpload({ userId }) {
               key={doc.id}
               className="list-group-item d-flex justify-content-between align-items-center"
             >
-              <span>{doc.file_name}</span>
+              <span className="text-truncate" style={{ maxWidth: "200px" }}>
+                {doc.file_name}
+              </span>
               <div>
                 <button
-                  onClick={() => handleViewFile(doc)}
-                  className="btn btn-sm btn-outline-primary me-2"
+                  onClick={() =>
+                    window.open(
+                      `http://localhost:3000/api/documents/view/${doc.id}`,
+                      "_blank",
+                    )
+                  }
+                  className="btn btn-sm btn-outline-primary ms-2"
                 >
-                  צפה בקובץ
+                  צפייה
                 </button>
                 <button
-                  onClick={() => handleDownloadFile(doc)}
+                  onClick={() => {
+                    /* download logic */
+                  }}
                   className="btn btn-sm btn-outline-secondary"
                 >
-                  הורד
+                  הורדה
                 </button>
               </div>
             </li>
           ))
         ) : (
-          <p>לא נמצאו קבצים.</p>
+          <li className="list-group-item text-center text-muted">
+            עדיין לא הועלו קבצים
+          </li>
         )}
       </ul>
     </div>

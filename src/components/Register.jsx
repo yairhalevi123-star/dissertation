@@ -19,10 +19,10 @@ function Register({ onRegister }) {
       });
       // Clear AI chat history for new register
       localStorage.removeItem("chat_history");
-      setMessage("Registration successful! Please login.");
+      setMessage("הרשמה בוצעה בהצלחה! התחברי בבקשה.");
       onRegister();
     } catch (error) {
-      setMessage(error.response?.data || "Error registering");
+      setMessage(error.response?.data || "שגיאה בהרשמה");
     }
   };
 
@@ -32,11 +32,11 @@ function Register({ onRegister }) {
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">
-              <h1 className="card-title text-center">Register</h1>
+              <h1 className="card-title text-center">הרשמה</h1>
               <form onSubmit={handleRegister}>
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">
-                    Name:
+                    שם:
                   </label>
                   <input
                     type="text"
@@ -49,7 +49,7 @@ function Register({ onRegister }) {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
-                    Email:
+                    דוא"ל:
                   </label>
                   <input
                     type="email"
@@ -62,7 +62,7 @@ function Register({ onRegister }) {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="password" className="form-label">
-                    Password:
+                    סיסמה:
                   </label>
                   <input
                     type="password"
@@ -75,7 +75,7 @@ function Register({ onRegister }) {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="lastPeriodDate" className="form-label">
-                    Last Period Date:
+                    תאריך מחזור אחרון:
                   </label>
                   <input
                     type="date"
@@ -87,7 +87,7 @@ function Register({ onRegister }) {
                   />
                 </div>
                 <button type="submit" className="btn btn-success w-100">
-                  Register
+                  הרשמה
                 </button>
               </form>
               {message && (

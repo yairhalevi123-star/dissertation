@@ -5,6 +5,13 @@ import "react-calendar/dist/Calendar.css";
 import "./Appointments.css";
 
 function Appointments({ userId }) {
+  const categoryMap = {
+    doctor: "ביקור אצל רופא",
+    ultrasound: "אולטרסונוגרפיה",
+    lab_test: "בדיקות מעבדה",
+    checkup: "בדיקה שוטפת",
+    other: "אחר",
+  };
   const [appointments, setAppointments] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
@@ -81,7 +88,7 @@ function Appointments({ userId }) {
   const handleDelete = async () => {
     if (
       !selectedAppointment ||
-      !window.confirm("Are you sure you want to delete this appointment?")
+      !window.confirm("האם אתה בטוח שברצונך למחוק את הפגישה הזו?")
     ) {
       return;
     }
@@ -167,7 +174,7 @@ function Appointments({ userId }) {
         <div className="row">
           {/* Calendar Section */}
           <div className="col-md-6">
-            <h3 className="card-title mb-4">Calendar ביומן</h3>
+            <h3 className="card-title mb-4">יומן</h3>
             <Calendar
               onChange={handleDateChange}
               value={selectedDate}
@@ -178,7 +185,7 @@ function Appointments({ userId }) {
 
           {/* Appointments Details Section */}
           <div className="col-md-6">
-            <h3 className="card-title mb-4">Appointments יעוצי רופא</h3>
+            <h3 className="card-title mb-4">פגישות</h3>
 
             {selectedAppointment ? (
               <div className="appointment-details card">
@@ -190,29 +197,30 @@ function Appointments({ userId }) {
 
                   <div className="details-group">
                     <p>
-                      <strong>Date:</strong>{" "}
+                      <strong>תאריך:</strong>{" "}
                       {new Date(
                         selectedAppointment.appointment_date,
                       ).toLocaleDateString()}
                     </p>
                     {selectedAppointment.appointment_time && (
                       <p>
-                        <strong>Time:</strong>{" "}
+                        <strong>שעה:</strong>{" "}
                         {selectedAppointment.appointment_time}
                       </p>
                     )}
                     <p>
-                      <strong>Category:</strong> {selectedAppointment.category}
+                      <strong>קטגוריה:</strong>{" "}
+                      {categoryMap[selectedAppointment.category] ||
+                        selectedAppointment.category}
                     </p>
                     {selectedAppointment.location && (
                       <p>
-                        <strong>Location:</strong>{" "}
-                        {selectedAppointment.location}
+                        <strong>מיקום:</strong> {selectedAppointment.location}
                       </p>
                     )}
                     {selectedAppointment.notes && (
                       <p>
-                        <strong>Notes:</strong> {selectedAppointment.notes}
+                        <strong>הערות:</strong> {selectedAppointment.notes}
                       </p>
                     )}
                   </div>
@@ -225,8 +233,8 @@ function Appointments({ userId }) {
                       ) > 0
                         ? `${calculateDaysRemaining(
                             selectedAppointment.appointment_date,
-                          )} ימים נותרים`
-                        : "appointment date passed"}
+                          )} ימים`
+                        : "התאריך עבר"}
                     </strong>
                   </div>
 
@@ -236,10 +244,10 @@ function Appointments({ userId }) {
                       className="btn btn-primary"
                       onClick={handleEditClick}
                     >
-                      Edit
+                      ערוך
                     </button>
                     <button className="btn btn-danger" onClick={handleDelete}>
-                      Delete
+                      מחק
                     </button>
                   </div>
                 </div>
@@ -247,9 +255,6 @@ function Appointments({ userId }) {
             ) : (
               <div className="no-appointment text-center">
                 <p className="text-muted">בחר תאריך או צור פגישה חדשה</p>
-                <p className="text-muted">
-                  Select a date or create a new appointment
-                </p>
               </div>
             )}
 
@@ -259,7 +264,7 @@ function Appointments({ userId }) {
                 className="btn btn-success w-100 mt-3"
                 onClick={handleNewAppointmentClick}
               >
-                Add New Appointment הוסף פגישה חדשה
+                הוסף פגישה חדשה
               </button>
             )}
 
@@ -268,13 +273,11 @@ function Appointments({ userId }) {
               <div className="appointment-form card mt-3">
                 <div className="card-body">
                   <h5 className="card-title">
-                    {selectedAppointment
-                      ? "Edit Appointment"
-                      : "New Appointment"}
+                    {selectedAppointment ? "עריכת פגישה" : "פגישה חדשה"}
                   </h5>
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                      <label className="form-label">Title *</label>
+                      <label className="form-label">כותרת *</label>
                       <input
                         type="text"
                         className="form-control"
@@ -286,7 +289,7 @@ function Appointments({ userId }) {
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label">Date *</label>
+                      <label className="form-label">תאריך *</label>
                       <input
                         type="date"
                         className="form-control"
@@ -298,7 +301,7 @@ function Appointments({ userId }) {
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label">Time</label>
+                      <label className="form-label">שעה</label>
                       <input
                         type="time"
                         className="form-control"
@@ -309,35 +312,35 @@ function Appointments({ userId }) {
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label">Category</label>
+                      <label className="form-label">קטגוריה</label>
                       <select
                         className="form-control"
                         name="category"
                         value={formData.category}
                         onChange={handleInputChange}
                       >
-                        <option value="doctor">Doctor Visit</option>
-                        <option value="ultrasound">Ultrasound</option>
-                        <option value="lab_test">Lab Test</option>
-                        <option value="checkup">Checkup</option>
-                        <option value="other">Other</option>
+                        <option value="doctor">ביקור אצל רופא</option>
+                        <option value="ultrasound">אולטרסונוגרפיה</option>
+                        <option value="lab_test">בדיקות מעבדה</option>
+                        <option value="checkup">בדיקה שוטפת</option>
+                        <option value="other">אחר</option>
                       </select>
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label">Location</label>
+                      <label className="form-label">מיקום</label>
                       <input
                         type="text"
                         className="form-control"
                         name="location"
                         value={formData.location}
                         onChange={handleInputChange}
-                        placeholder="Hospital, Clinic, etc."
+                        placeholder="בית חולים, מרפאה וכו'"
                       />
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label">Description</label>
+                      <label className="form-label">תיאור</label>
                       <textarea
                         className="form-control"
                         name="description"
@@ -348,7 +351,7 @@ function Appointments({ userId }) {
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label">Notes</label>
+                      <label className="form-label">הערות</label>
                       <textarea
                         className="form-control"
                         name="notes"
@@ -360,7 +363,7 @@ function Appointments({ userId }) {
 
                     <div className="d-flex gap-2">
                       <button type="submit" className="btn btn-primary">
-                        Save Appointment
+                        שמור פגישה
                       </button>
                       <button
                         type="button"
@@ -370,7 +373,7 @@ function Appointments({ userId }) {
                           resetForm();
                         }}
                       >
-                        Cancel
+                        ביטול
                       </button>
                     </div>
                   </form>
@@ -382,7 +385,7 @@ function Appointments({ userId }) {
 
         {/* Upcoming Appointments List */}
         <div className="mt-5">
-          <h4 className="mb-3">Upcoming Appointments הפגישות הקרובות</h4>
+          <h4 className="mb-3">הפגישות הקרובות</h4>
           <div className="appointments-list">
             {appointments
               .filter(
@@ -398,11 +401,12 @@ function Appointments({ userId }) {
                       <h6 className="mb-1">{apt.title}</h6>
                       <small className="text-muted">
                         {new Date(apt.appointment_date).toLocaleDateString()}
-                        {apt.appointment_time && ` at ${apt.appointment_time}`}
+                        {apt.appointment_time &&
+                          ` בשעה ${apt.appointment_time}`}
                       </small>
                     </div>
                     <span className={`badge badge-${apt.category}`}>
-                      {calculateDaysRemaining(apt.appointment_date)} days
+                      {calculateDaysRemaining(apt.appointment_date)} ימים
                     </span>
                   </div>
                 </div>
@@ -413,7 +417,7 @@ function Appointments({ userId }) {
                 calculateDaysRemaining(apt.appointment_date) <= 30,
             ).length === 0 && (
               <p className="text-muted text-center">
-                No upcoming appointments in the next 30 days
+                אין פגישות קרובות ב-30 הימים הקרובים
               </p>
             )}
           </div>
