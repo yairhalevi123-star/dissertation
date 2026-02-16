@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-// IMPORTANT: Check if these files exist in the same folder!
 import DocumentUpload from "./DocumentUpload";
 import DailyLog from "./DailyLog";
 import BabySize from "./BabySize";
@@ -10,6 +9,8 @@ import WeightTracker from "./WeightTracker";
 import ContractionTimer from "./ContractionTimer";
 import AIChat from "./AIChat";
 import Appointments from "./Appointments";
+import PregnancyCharts from "./PregnancyCharts";
+import NotificationSettings from "./NotificationSettings";
 
 function Dashboard({ user }) {
   const [status, setStatus] = useState(null);
@@ -110,6 +111,9 @@ function Dashboard({ user }) {
           <div id="ai-chat" className="mb-4">
             <AIChat userStatus={status} userId={user.id} />
           </div>
+          <div id="notification-settings" className="mb-4">
+            <NotificationSettings userId={user.id} />
+          </div>
           <div id="appointments" className="mb-4">
             <Appointments userId={user.id} />
           </div>
@@ -164,11 +168,24 @@ function Dashboard({ user }) {
           <div id="kick-counter" className="mb-4">
             <KickCounter userId={user.id} />
           </div>
-          <div id="weight-tracker" className="mb-4">
-            <WeightTracker userId={user.id} />
+
+          {/* PregnancyCharts - Combined Weight & Contraction Charts */}
+          <div id="pregnancy-charts" className="mb-4">
+            <div className="card shadow-sm border-0">
+              <div className="card-body p-0">
+                <PregnancyCharts />
+              </div>
+            </div>
           </div>
-          <div id="contractions" className="mb-4">
-            <ContractionTimer userId={user.id} />
+
+          {/* Original Individual Components */}
+          <div className="row">
+            <div className="col-lg-6 mb-4" id="weight-tracker">
+              <WeightTracker userId={user.id} />
+            </div>
+            <div className="col-lg-6 mb-4" id="contractions">
+              <ContractionTimer userId={user.id} />
+            </div>
           </div>
         </div>
       </div>

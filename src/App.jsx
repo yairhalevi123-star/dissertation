@@ -94,6 +94,11 @@ function AppContent() {
                   </a>
                 </li>
                 <li className="nav-item">
+                  <a className="nav-link" href="#pregnancy-charts">
+                    גרפים - משקל וצירים
+                  </a>
+                </li>
+                <li className="nav-item">
                   <a className="nav-link" href="#weight-tracker">
                     מעקב משקל
                   </a>
