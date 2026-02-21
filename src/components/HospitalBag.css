@@ -1,0 +1,90 @@
+.hospital-bag-container {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.bag-header h2 {
+  color: #ff69b4;
+  text-align: center;
+}
+
+.smart-alert {
+  background: #fff0f5;
+  color: #d63384;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 15px 0;
+  border: 1px dashed #ffb6c1;
+  font-weight: bold;
+}
+
+.progress-wrapper {
+  background: #f0f0f0;
+  height: 20px;
+  border-radius: 10px;
+  position: relative;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #ffb6c1, #ff69b4);
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.progress-wrapper span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.bag-category h3 {
+  border-right: 4px solid #ffb6c1;
+  padding-right: 10px;
+  color: #555;
+  margin-top: 20px;
+}
+
+.bag-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.bag-item:hover {
+  background: #fff5f8;
+}
+
+.bag-item.checked span {
+  text-decoration: line-through;
+  color: #bbb;
+}
+
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #ffb6c1;
+  border-radius: 6px;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff69b4;
+  font-weight: bold;
+}
+
+.bag-item.checked .checkbox {
+  background: #ffb6c1;
+  color: white;
+}

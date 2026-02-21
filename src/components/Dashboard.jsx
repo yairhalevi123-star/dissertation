@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 import DocumentUpload from "./DocumentUpload";
@@ -10,13 +10,15 @@ import ContractionTimer from "./ContractionTimer";
 import AIChat from "./AIChat";
 import Appointments from "./Appointments";
 import PregnancyCharts from "./PregnancyCharts";
+import HospitalBag from "./HospitalBag";
 import NotificationSettings from "./NotificationSettings";
 
 function Dashboard({ user }) {
   const [status, setStatus] = useState(null);
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Added error state
+  const [error, setError] = useState(null);
+  const aiChatRef = useRef(null);
 
   useEffect(() => {
     // Safety Guard: Don't fetch if user or user.id is missing
@@ -60,6 +62,14 @@ function Dashboard({ user }) {
     }
   };
 
+  // Function to check food safety - will be used by both the buttons and passed to AIChat
+  const checkFoodSafety = async (foodName) => {
+    // Call the checkFoodSafety function exposed by the AIChat component via ref
+    if (aiChatRef.current && aiChatRef.current.checkFoodSafety) {
+      aiChatRef.current.checkFoodSafety(foodName);
+    }
+  };
+
   if (loading)
     return (
       <div className="text-center mt-5 p-5">
@@ -80,7 +90,45 @@ function Dashboard({ user }) {
           <h1 className="text-center mb-4">
             שלום, {status.name || "אורחת"}! 👋
           </h1>
+          <div className="food-safety-quick-access p-4 bg-white rounded-4 shadow-sm mb-4 text-center">
+            <h4 className="mb-3" style={{ color: "#ff69b4" }}>
+              🍕 מותר לי לאכול את זה?
+            </h4>
+            <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
+              {["סושי", "ביצה רכה", "קפה", "טונה", "גבינה כחולה"].map(
+                (food) => (
+                  <button
+                    key={food}
+                    className="btn btn-outline-secondary rounded-pill px-3"
+                    onClick={() => checkFoodSafety(food)}
+                  >
+                    {food}
+                  </button>
+                ),
+              )}
+            </div>
 
+            {/* שורת חיפוש חופשי */}
+            <div
+              className="input-group max-width-400 mx-auto"
+              style={{ maxWidth: "400px" }}
+            >
+              <input
+                type="text"
+                className="form-control rounded-start-pill border-end-0"
+                placeholder="חפשי מאכל אחר (למשל: סטייק, פסטרמה...)"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    checkFoodSafety(e.target.value);
+                    e.target.value = "";
+                  }
+                }}
+              />
+              <button className="btn btn-primary rounded-end-pill px-4">
+                בדקי
+              </button>
+            </div>
+          </div>
           {/* Progress Card */}
           <div className="card mb-4 shadow-sm border-0">
             <div className="card-body">
@@ -109,13 +157,16 @@ function Dashboard({ user }) {
             <BabySize currentWeek={status.currentWeek} />
           </div>
           <div id="ai-chat" className="mb-4">
-            <AIChat userStatus={status} userId={user.id} />
+            <AIChat ref={aiChatRef} userStatus={status} userId={user.id} />
           </div>
           <div id="notification-settings" className="mb-4">
             <NotificationSettings userId={user.id} />
           </div>
           <div id="appointments" className="mb-4">
             <Appointments userId={user.id} />
+          </div>
+          <div id="hospital-bag" className="mb-4">
+            <HospitalBag currentWeek={status.currentWeek} />
           </div>
 
           {/* Tests List */}
@@ -169,15 +220,14 @@ function Dashboard({ user }) {
             <KickCounter userId={user.id} />
           </div>
 
-          {/* PregnancyCharts - Combined Weight & Contraction Charts */}
           <div id="pregnancy-charts" className="mb-4">
             <div className="card shadow-sm border-0">
-              <div className="card-body p-0">
-                <PregnancyCharts />
+              {/* הוספנו סטייל שקובע גובה מינימלי לכרטיס עצמו */}
+              <div className="card-body p-0" style={{ minHeight: "450px" }}>
+                <PregnancyCharts userId={user.id} />
               </div>
             </div>
           </div>
-
           {/* Original Individual Components */}
           <div className="row">
             <div className="col-lg-6 mb-4" id="weight-tracker">

@@ -1,7 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import axios from "axios";
 
-function AIChat({ userStatus, userId }) {
+const AIChat = forwardRef(({ userStatus, userId }, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -98,9 +104,51 @@ function AIChat({ userStatus, userId }) {
         { role: "assistant", content: response.data.reply },
       ]);
     } catch (error) {
+      console.error("Chat error:", error);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "מצטער, חלה שגיאה בחיבור." },
+        { role: "assistant", content: "מצטער, חלה שגיאה בחיבור. אנא נסי שוב." },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Expose checkFoodSafety function via ref so it can be called from Dashboard
+  useImperativeHandle(ref, () => ({
+    checkFoodSafety,
+  }));
+
+  // Function to check food safety
+  const checkFoodSafety = async (foodName) => {
+    setIsOpen(true); // Open the chat widget if closed
+    setIsLoading(true);
+
+    const foodPrompt = `האם מותר לאכול ${foodName} בהריון? ענה בצורה קצרה מאוד וברורה. 
+  השתמש באייקונים: ✅ (מותר), ⚠️ (בזהירות/מוגבל), ❌ (אסור). 
+  הסבר בקצרה למה.`;
+
+    const userMsg = { role: "user", content: `האם מותר לאכול ${foodName}?` };
+    setMessages((prev) => [...prev, userMsg]);
+
+    try {
+      const response = await axios.post("/api/ai/chat", {
+        messages: [...messages, { role: "user", content: foodPrompt }],
+        currentWeek: userStatus.currentWeek,
+        userName: userStatus.name,
+        userId,
+        pageData: null, // No need for page data for food check
+      });
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: response.data.reply },
+      ]);
+    } catch (error) {
+      console.error("Food safety check error:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "שגיאה בבדיקת המאכל. אנא נסי שוב." },
       ]);
     } finally {
       setIsLoading(false);
@@ -309,6 +357,8 @@ function AIChat({ userStatus, userId }) {
       )}
     </div>
   );
-}
+});
+
+AIChat.displayName = "AIChat";
 
 export default AIChat;
