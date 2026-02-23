@@ -22,25 +22,40 @@
   box-shadow: 0 8px 24px rgba(255, 105, 180, 0.1);
   overflow: hidden;
   font-family: "Poppins", sans-serif;
+  font-size: 0.95rem !important;
 }
 
 .appointments-calendar.react-calendar {
   max-width: 100%;
 }
 
+.appointments-calendar .react-calendar__month-view {
+  width: 100% !important;
+}
+
+.appointments-calendar .react-calendar__navigation {
+  margin-bottom: 1rem;
+}
+
+.appointments-calendar .react-calendar__navigation__label {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
 .react-calendar__tile {
-  padding: 0.75rem 0.5rem;
+  padding: 0.85rem 0.35rem;
   position: relative;
-  min-height: 80px;
+  min-height: 70px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   transition: all 0.3s ease;
   border-radius: 10px;
-  margin: 2px;
+  margin: 3px;
   font-family: "Poppins", sans-serif;
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .react-calendar__tile--active {
@@ -235,6 +250,201 @@
 
   .appointment-item .card-body {
     flex-direction: column;
+  }
+}
+
+/* Dashboard grid layout */
+.appointments-dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.main-col {
+  min-width: 0;
+}
+
+.sidebar-col {
+  min-width: 0;
+}
+
+.hero-card {
+  padding: 1.25rem;
+  background: linear-gradient(180deg, #fff6fb, #fff0f7);
+  border: 1px solid rgba(255, 75, 145, 0.08);
+  border-radius: 1rem;
+}
+
+.hero-title {
+  color: #333;
+  font-weight: 700;
+}
+
+.hero-badge {
+  margin-top: 0.75rem;
+  display: inline-block;
+  background: #ff4b91;
+  color: #fff;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.sidebar-card {
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 192, 203, 0.2);
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-card h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.recommended-tests .test-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 192, 203, 0.1);
+}
+
+.recommended-tests .test-item:last-child {
+  border-bottom: none;
+}
+
+.recommended-tests .test-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.recommended-tests .test-item small {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.book-now {
+  background: #ff4b91;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.book-now:hover {
+  background: #ff1493;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 75, 145, 0.2);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-card {
+  width: 720px;
+  max-width: 95%;
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.modal-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.primary-action {
+  background: #ff4b91;
+  color: white;
+  border: none;
+}
+
+/* Large Calendar Modal */
+.calendar-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 1rem;
+}
+
+.calendar-modal-card {
+  width: 90%;
+  max-width: 600px;
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 75, 145, 0.1);
+}
+
+.calendar-modal-header h4 {
+  margin: 0;
+  color: #333;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.calendar-modal-body {
+  display: flex;
+  justify-content: center;
+}
+
+.appointments-calendar-large {
+  width: 100%;
+  max-width: 100%;
+  font-size: 1rem !important;
+}
+
+.appointments-calendar-large .react-calendar__tile {
+  padding: 1rem 0.5rem;
+  min-height: 100px;
+  font-size: 1rem;
+}
+
+.appointments-calendar-large .react-calendar__month-view__days__day {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 992px) {
+  .appointments-dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }
 

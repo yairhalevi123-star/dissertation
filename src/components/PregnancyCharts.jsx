@@ -436,7 +436,9 @@ const PregnancyCharts = ({ userId }) => {
       </div>
 
       <div className="chart-section weight-data-table">
-        <h3 className="table-title">פירוט שקילות</h3>
+        <h3 className="table-title" style={{ textAlign: "center" }}>
+          פירוט שקילות
+        </h3>
         <div className="table-container">
           {userEntries.length > 0 ? (
             <table>

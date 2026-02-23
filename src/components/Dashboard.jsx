@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
+import {
+  Home,
+  Activity,
+  Briefcase,
+  Calendar,
+  Settings,
+  ClipboardList,
+} from "lucide-react";
 
 import DocumentUpload from "./DocumentUpload";
 import DailyLog from "./DailyLog";
@@ -13,17 +22,17 @@ import PregnancyCharts from "./PregnancyCharts";
 import HospitalBag from "./HospitalBag";
 import NotificationSettings from "./NotificationSettings";
 
-function Dashboard({ user }) {
+function Dashboard({ user, onLogout }) {
   const [status, setStatus] = useState(null);
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const aiChatRef = useRef(null);
+  const location = useLocation();
 
   useEffect(() => {
-    // Safety Guard: Don't fetch if user or user.id is missing
     if (!user || !user.id) {
-      setError("User information missing");
+      setError("מידע משתמש חסר");
       setLoading(false);
       return;
     }
@@ -35,17 +44,23 @@ function Dashboard({ user }) {
           axios.get(`/api/user/tests/${user.id}`),
         ]);
         setStatus(statusRes.data);
-        setTests(testsRes.data || []); // Fallback to empty array
+        localStorage.setItem("userStatus", JSON.stringify(statusRes.data));
+        setTests(testsRes.data || []);
       } catch (err) {
         console.error("Fetch error:", err);
-        setError("שגיאה בחיבור לשרת. בדקי שה-Backend פועל.");
+        setError("שגיאה בחיבור לשרת.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [user]); // Run when user object changes
+  }, [user]);
+
+  const checkFoodSafety = async (foodName) => {
+    if (aiChatRef.current && aiChatRef.current.checkFoodSafety) {
+      aiChatRef.current.checkFoodSafety(foodName);
+    }
+  };
 
   const toggleTest = async (testId, currentStatus) => {
     try {
@@ -62,183 +77,258 @@ function Dashboard({ user }) {
     }
   };
 
-  // Function to check food safety - will be used by both the buttons and passed to AIChat
-  const checkFoodSafety = async (foodName) => {
-    // Call the checkFoodSafety function exposed by the AIChat component via ref
-    if (aiChatRef.current && aiChatRef.current.checkFoodSafety) {
-      aiChatRef.current.checkFoodSafety(foodName);
-    }
-  };
-
   if (loading)
     return (
       <div className="text-center mt-5 p-5">
         <h3>טוען...</h3>
       </div>
     );
-
   if (error)
     return <div className="alert alert-danger m-5 text-center">{error}</div>;
 
-  if (!status)
-    return <div className="text-center mt-5">לא נמצאו נתונים עבור המשתמש.</div>;
+  // פונקציית עזר לבדיקה איזה נתיב פעיל ב-Sidebar
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="container mt-5" dir="rtl">
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <h1 className="text-center mb-4">
-            שלום, {status.name || "אורחת"}! 👋
-          </h1>
-          <div className="food-safety-quick-access p-4 bg-white rounded-4 shadow-sm mb-4 text-center">
-            <h4 className="mb-3" style={{ color: "#ff69b4" }}>
-              🍕 מותר לי לאכול את זה?
-            </h4>
-            <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
-              {["סושי", "ביצה רכה", "קפה", "טונה", "גבינה כחולה"].map(
-                (food) => (
-                  <button
-                    key={food}
-                    className="btn btn-outline-secondary rounded-pill px-3"
-                    onClick={() => checkFoodSafety(food)}
-                  >
-                    {food}
-                  </button>
-                ),
-              )}
-            </div>
+    <div className="dashboard-wrapper" dir="rtl">
+      {/* Sidebar Navigation */}
+      <aside className="sidebar">
+        <div className="sidebar-logo">
+          <h2>BellyStep ✨</h2>
+        </div>
+        <nav className="sidebar-nav">
+          <Link
+            to="/dashboard"
+            className={`nav-item ${isActive("/dashboard") ? "active" : ""}`}
+          >
+            <Home size={20} /> דף הבית
+          </Link>
+          <Link
+            to="/dashboard/medical"
+            className={`nav-item ${isActive("/dashboard/medical") ? "active" : ""}`}
+          >
+            <ClipboardList size={20} /> בדיקות ומסמכים
+          </Link>
+          <Link
+            to="/dashboard/trackers"
+            className={`nav-item ${isActive("/dashboard/trackers") ? "active" : ""}`}
+          >
+            <Activity size={20} /> מעקב וגרפים
+          </Link>
+          <Link
+            to="/dashboard/prep"
+            className={`nav-item ${isActive("/dashboard/prep") ? "active" : ""}`}
+          >
+            <Briefcase size={20} /> הכנה ללידה
+          </Link>
+          <Link
+            to="/dashboard/settings"
+            className={`nav-item ${isActive("/dashboard/settings") ? "active" : ""}`}
+          >
+            <Settings size={20} /> הגדרות
+          </Link>
 
-            {/* שורת חיפוש חופשי */}
+          <button
+            onClick={onLogout}
+            className="nav-item logout-btn mt-auto"
+            style={{
+              border: "none",
+              background: "none",
+              textAlign: "right",
+              width: "100%",
+            }}
+          >
+            יציאה
+          </button>
+        </nav>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="main-content">
+        <header className="top-bar">
+          <div>
+            <h1>שלום, {status?.name || "אורחת"}! 👋</h1>
+            <p className="text-muted mb-0">שמחים לראות אותך שוב</p>
+          </div>
+          <div className="week-badge">
+            שבוע {status?.currentWeek} + {status?.daysIntoWeek} ימים
+          </div>
+        </header>
+
+        {/* Progress Bar הקבוע בראש כל הדפים */}
+        <div className="card mb-4 shadow-sm border-0 progress-card-top">
+          <div className="card-body py-2">
             <div
-              className="input-group max-width-400 mx-auto"
-              style={{ maxWidth: "400px" }}
+              className="progress"
+              style={{ height: "10px", borderRadius: "10px" }}
             >
-              <input
-                type="text"
-                className="form-control rounded-start-pill border-end-0"
-                placeholder="חפשי מאכל אחר (למשל: סטייק, פסטרמה...)"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    checkFoodSafety(e.target.value);
-                    e.target.value = "";
-                  }
-                }}
-              />
-              <button className="btn btn-primary rounded-end-pill px-4">
-                בדקי
-              </button>
-            </div>
-          </div>
-          {/* Progress Card */}
-          <div className="card mb-4 shadow-sm border-0">
-            <div className="card-body">
-              <h2 className="card-title h4">
-                את בשבוע {status.currentWeek} + {status.daysIntoWeek} ימים
-              </h2>
               <div
-                className="progress mb-3"
-                style={{ height: "20px", borderRadius: "10px" }}
-              >
-                <div
-                  className="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                  role="progressbar"
-                  style={{
-                    width: `${Math.min((status.currentWeek / 40) * 100, 100)}%`,
-                  }}
-                >
-                  שבוע {status.currentWeek}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sections */}
-          <div id="baby-size" className="mb-4">
-            <BabySize currentWeek={status.currentWeek} />
-          </div>
-          <div id="ai-chat" className="mb-4">
-            <AIChat ref={aiChatRef} userStatus={status} userId={user.id} />
-          </div>
-          <div id="notification-settings" className="mb-4">
-            <NotificationSettings userId={user.id} />
-          </div>
-          <div id="appointments" className="mb-4">
-            <Appointments userId={user.id} />
-          </div>
-          <div id="hospital-bag" className="mb-4">
-            <HospitalBag currentWeek={status.currentWeek} />
-          </div>
-
-          {/* Tests List */}
-          <div className="card shadow-sm mb-4 border-0" id="recommended-tests">
-            <div className="card-body">
-              <h3 className="card-title h5 mb-4">הבדיקות המומלצות עבורך:</h3>
-              <ul className="list-group list-group-flush">
-                {tests.length > 0 ? (
-                  tests.map((test) => (
-                    <li
-                      key={test.id}
-                      className="list-group-item d-flex align-items-center border-0 px-0"
-                    >
-                      <input
-                        type="checkbox"
-                        className="form-check-input ms-3"
-                        checked={test.is_completed}
-                        onChange={() => toggleTest(test.id, test.is_completed)}
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          cursor: "pointer",
-                        }}
-                      />
-                      <span
-                        style={{
-                          textDecoration: test.is_completed
-                            ? "line-through"
-                            : "none",
-                          color: test.is_completed ? "#adb5bd" : "#212529",
-                        }}
-                      >
-                        <strong>{test.title}</strong> — שבוע {test.target_week}
-                      </span>
-                    </li>
-                  ))
-                ) : (
-                  <p className="text-muted">אין בדיקות מתוכננות כרגע.</p>
-                )}
-              </ul>
-            </div>
-          </div>
-
-          <div id="documents" className="mb-4">
-            <DocumentUpload userId={user.id} />
-          </div>
-          <div id="daily-log" className="mb-4">
-            <DailyLog userId={user.id} />
-          </div>
-          <div id="kick-counter" className="mb-4">
-            <KickCounter userId={user.id} />
-          </div>
-
-          <div id="pregnancy-charts" className="mb-4">
-            <div className="card shadow-sm border-0">
-              {/* הוספנו סטייל שקובע גובה מינימלי לכרטיס עצמו */}
-              <div className="card-body p-0" style={{ minHeight: "450px" }}>
-                <PregnancyCharts userId={user.id} />
-              </div>
-            </div>
-          </div>
-          {/* Original Individual Components */}
-          <div className="row">
-            <div className="col-lg-6 mb-4" id="weight-tracker">
-              <WeightTracker userId={user.id} />
-            </div>
-            <div className="col-lg-6 mb-4" id="contractions">
-              <ContractionTimer userId={user.id} />
+                className="progress-bar"
+                style={{
+                  width: `${Math.min((status?.currentWeek / 40) * 100, 100)}%`,
+                  backgroundColor: "#ff69b4",
+                }}
+              ></div>
             </div>
           </div>
         </div>
-      </div>
+
+        {/* חלוקת התוכן לפי נתיבים */}
+        <Routes>
+          {/* --- דף הבית --- */}
+          <Route
+            path="/"
+            element={
+              <div className="content-grid">
+                <div className="grid-full-width">
+                  <div className="food-safety-quick-access p-4 bg-white rounded-4 shadow-sm text-center">
+                    <h4 className="mb-3" style={{ color: "#ff69b4" }}>
+                      🍕 מותר לי לאכול את זה?
+                    </h4>
+                    <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                      {["סושי", "ביצה רכה", "קפה", "טונה"].map((food) => (
+                        <button
+                          key={food}
+                          className="btn btn-outline-secondary rounded-pill px-3"
+                          onClick={() => checkFoodSafety(food)}
+                        >
+                          {food}
+                        </button>
+                      ))}
+                    </div>
+                    <div
+                      className="input-group mx-auto"
+                      style={{ maxWidth: "400px" }}
+                    >
+                      <input
+                        id="food-search"
+                        type="text"
+                        className="form-control rounded-start-pill"
+                        placeholder="חפשי מאכל..."
+                      />
+                      <button
+                        className="btn btn-primary rounded-end-pill px-4"
+                        onClick={() => {
+                          const val =
+                            document.getElementById("food-search").value;
+                          if (val) checkFoodSafety(val);
+                        }}
+                      >
+                        בדקי
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-item">
+                  <BabySize currentWeek={status?.currentWeek} />
+                </div>
+                <div className="grid-item">
+                  <DailyLog userId={user.id} />
+                </div>
+                <div className="grid-item">
+                  <KickCounter userId={user.id} />
+                </div>
+              </div>
+            }
+          />
+
+          {/* --- דף רפואי --- */}
+          <Route
+            path="/medical"
+            element={
+              <div className="content-grid">
+                <div className="grid-item">
+                  <Appointments userId={user.id} />
+                </div>
+                <div className="grid-item">
+                  <div className="card shadow-sm border-0 h-100">
+                    <div className="card-body">
+                      <h3 className="h5 mb-3">בדיקות מומלצות</h3>
+                      <ul className="list-group list-group-flush">
+                        {tests.map((test) => (
+                          <li
+                            key={test.id}
+                            className="list-group-item d-flex align-items-center border-0 px-0 py-2"
+                          >
+                            <input
+                              type="checkbox"
+                              className="form-check-input ms-2"
+                              checked={test.is_completed}
+                              onChange={() =>
+                                toggleTest(test.id, test.is_completed)
+                              }
+                            />
+                            <span
+                              style={{
+                                textDecoration: test.is_completed
+                                  ? "line-through"
+                                  : "none",
+                                fontSize: "0.9rem",
+                              }}
+                            >
+                              {test.title} (שבוע {test.target_week})
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-item">
+                  <DocumentUpload userId={user.id} />
+                </div>
+              </div>
+            }
+          />
+
+          {/* --- דף מעקבים וגרפים --- */}
+          <Route
+            path="/trackers"
+            element={
+              <div className="content-grid">
+                <div className="grid-full-width">
+                  <PregnancyCharts userId={user.id} />
+                </div>
+                <div className="grid-item">
+                  <WeightTracker userId={user.id} />
+                </div>
+                <div className="grid-item">
+                  <ContractionTimer userId={user.id} />
+                </div>
+              </div>
+            }
+          />
+
+          {/* --- דף הכנה ללידה --- */}
+          <Route
+            path="/prep"
+            element={
+              <div className="content-grid">
+                <div className="grid-item">
+                  <HospitalBag
+                    currentWeek={status?.currentWeek}
+                    userId={user.id}
+                  />
+                </div>
+              </div>
+            }
+          />
+
+          {/* --- דף הגדרות --- */}
+          <Route
+            path="/settings"
+            element={
+              <div className="content-grid">
+                <div className="grid-item">
+                  <NotificationSettings userId={user.id} />
+                </div>
+              </div>
+            }
+          />
+        </Routes>
+
+        <AIChat ref={aiChatRef} userStatus={status} userId={user.id} />
+      </main>
     </div>
   );
 }
