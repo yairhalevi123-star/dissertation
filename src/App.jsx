@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   BrowserRouter as Router, // הוספנו "as Router" כדי שיהיה שם קצר ואחיד
   Routes,
@@ -15,6 +15,20 @@ import GuestFAQ from "./components/GuestFAQ";
 import AIChat from "./components/AIChat";
 import "./App.css";
 
+// Apply saved dark-mode immediately to avoid flicker before React mounts
+try {
+  if (
+    typeof window !== "undefined" &&
+    localStorage.getItem("dark_mode") === "true"
+  ) {
+    document.documentElement.classList.add("dark-theme");
+  } else {
+    document.documentElement.classList.remove("dark-theme");
+  }
+} catch (e) {
+  // ignore if accessing localStorage fails in some environments
+}
+
 function AppContent() {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null,
@@ -24,6 +38,31 @@ function AppContent() {
   );
   const navigate = useNavigate();
   const aiChatRef = useRef(null);
+
+  useEffect(() => {
+    const handleDarkMode = (e) => {
+      const detail = typeof e?.detail !== "undefined" ? e.detail : null;
+      const dark =
+        detail !== null ? detail : localStorage.getItem("dark_mode") === "true";
+      if (dark) document.documentElement.classList.add("dark-theme");
+      else document.documentElement.classList.remove("dark-theme");
+    };
+
+    // listen for dispatches from settings and for cross-tab storage changes
+    window.addEventListener("dark-mode-changed", handleDarkMode);
+    const handleStorage = (ev) => {
+      if (ev.key === "dark_mode") handleDarkMode();
+    };
+    window.addEventListener("storage", handleStorage);
+
+    // apply initial value
+    handleDarkMode();
+
+    return () => {
+      window.removeEventListener("dark-mode-changed", handleDarkMode);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
 
   const handleLogin = (userData) => {
     setUser(userData);

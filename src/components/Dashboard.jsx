@@ -6,7 +6,7 @@ import {
   Activity,
   Briefcase,
   Calendar,
-  Settings,
+  SettingsIcon,
   ClipboardList,
 } from "lucide-react";
 
@@ -20,7 +20,7 @@ import AIChat from "./AIChat";
 import Appointments from "./Appointments";
 import PregnancyCharts from "./PregnancyCharts";
 import HospitalBag from "./HospitalBag";
-import NotificationSettings from "./NotificationSettings";
+import Settings from "./Settings";
 
 function Dashboard({ user, onLogout }) {
   const [status, setStatus] = useState(null);
@@ -125,7 +125,7 @@ function Dashboard({ user, onLogout }) {
             to="/dashboard/settings"
             className={`nav-item ${isActive("/dashboard/settings") ? "active" : ""}`}
           >
-            <Settings size={20} /> הגדרות
+            <SettingsIcon size={20} /> הגדרות
           </Link>
 
           <button
@@ -319,8 +319,9 @@ function Dashboard({ user, onLogout }) {
             path="/settings"
             element={
               <div className="content-grid">
-                <div className="grid-item">
-                  <NotificationSettings userId={user.id} />
+                <div className="grid-full-width">
+                  {/* העברת המשתמש בצורה מפורשת */}
+                  <Settings user={user} />
                 </div>
               </div>
             }

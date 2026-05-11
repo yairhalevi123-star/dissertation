@@ -1,0 +1,510 @@
+/* Kick Counter Component Styling */
+
+.kick-counter-container {
+  padding: 1rem 0;
+  direction: rtl;
+}
+
+/* AI Insights Card */
+.ai-insights-kick-card {
+  background: linear-gradient(135deg, #f5e6f5 0%, #ffe6f0 100%);
+  border: 2px solid rgba(186, 85, 211, 0.2);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 24px rgba(186, 85, 211, 0.15);
+  position: relative;
+}
+
+.ai-insights-kick-card h4 {
+  margin: 0 0 1rem 0;
+  color: #9b3db3;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.insights-text {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.insights-text p {
+  margin: 0;
+  color: #333;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.insights-text.loading-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.btn-refresh-insights {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  padding: 0;
+}
+
+.btn-refresh-insights:hover {
+  transform: rotate(180deg);
+}
+
+.btn-refresh-insights:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Main Counter Card */
+.kick-counter-card {
+  background: white;
+  border: 1px solid #f0d9e0;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.counter-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.counter-subtitle {
+  margin: 0;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+/* Circular Progress Bar */
+.circular-progress-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 2rem auto;
+}
+
+.circular-progress {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-bg {
+  fill: none;
+  stroke: #f0f0f0;
+  stroke-width: 6;
+}
+
+.progress-fill {
+  fill: none;
+  stroke: linear-gradient(135deg, #ff69b4, #ff1493);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.kicks-display {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ff69b4;
+  line-height: 1;
+}
+
+.progress-label {
+  font-size: 0.85rem;
+  color: #999;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+/* Timer Display */
+.timer-display {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 1.5rem 0;
+  font-weight: 600;
+}
+
+.timer-value {
+  color: #ff69b4;
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+/* Main Kick Button */
+.kick-button {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  color: white;
+  border: none;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 1.5rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+}
+
+.kick-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(255, 105, 180, 0.3);
+}
+
+.kick-button:active {
+  transform: scale(0.98);
+}
+
+.kick-button.tracking {
+  animation: pulse-button 1s ease-in-out infinite;
+}
+
+@keyframes pulse-button {
+  0%,
+  100% {
+    box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+  }
+  50% {
+    box-shadow: 0 12px 40px rgba(255, 105, 180, 0.4);
+  }
+}
+
+.pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 105, 180, 0.5);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.kick-button-text {
+  position: relative;
+  z-index: 1;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.6rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.2);
+}
+
+.btn-primary {
+  background: #ff69b4;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #ff1493;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 105, 180, 0.2);
+}
+
+.btn-outline-danger {
+  background: transparent;
+  color: #dc3545;
+  border: 2px solid #dc3545;
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-outline-secondary {
+  background: transparent;
+  color: #6c757d;
+  border: 2px solid #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background: #6c757d;
+  color: white;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.modal-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+}
+
+.session-modal {
+  text-align: right;
+  direction: rtl;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-header h4 {
+  margin: 0;
+  color: #333;
+  font-weight: 700;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.session-summary {
+  background: #f9f9f9;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.session-summary p {
+  margin: 0.5rem 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.intensity-hearts {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.heart {
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  opacity: 0.3;
+  padding: 0;
+}
+
+.heart:hover {
+  transform: scale(1.2);
+}
+
+.heart.filled {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  direction: rtl;
+  text-align: right;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #ff69b4;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+}
+
+.form-control::placeholder {
+  color: #ccc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .kick-counter-card {
+    padding: 1.5rem;
+  }
+
+  .circular-progress-container {
+    width: 150px;
+    height: 150px;
+    margin: 1.5rem auto;
+  }
+
+  .kicks-display {
+    font-size: 2.5rem;
+  }
+
+  .kick-button {
+    width: 100px;
+    height: 100px;
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    gap: 0.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .ai-insights-kick-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kick-counter-card {
+    padding: 1rem;
+  }
+
+  .circular-progress-container {
+    width: 120px;
+    height: 120px;
+    margin: 1rem auto;
+  }
+
+  .kicks-display {
+    font-size: 2rem;
+  }
+
+  .kick-button {
+    width: 80px;
+    height: 80px;
+    font-size: 0.9rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .intensity-hearts {
+    justify-content: center;
+  }
+
+  .heart {
+    font-size: 1.5rem;
+  }
+}
